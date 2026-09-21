@@ -1,0 +1,25 @@
+name: reusable-swift-portable-ci
+on:
+  workflow_call:
+    inputs:
+      swift-version:
+        type: string
+        default: '6.2'
+      test-command:
+        type: string
+        default: 'swift test'
+      runner:
+        type: string
+        default: '["self-hosted","Linux","X64","build"]'
+permissions:
+  contents: read
+jobs:
+  swift:
+    runs-on: ${{ fromJSON(inputs.runner) }}
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: swift-actions/setup-swift@7ca6abe6b3b0e8b5421b88be48feee39cbf52c6a
+        with:
+          swift-version: ${{ inputs.swift-version }}
+      - run: ${{ inputs.test-command }}

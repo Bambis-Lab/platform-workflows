@@ -1,0 +1,17 @@
+name: reusable-blackglass-ci
+on:
+  workflow_call:
+    inputs:
+      test-command:
+        type: string
+        default: 'python -m pytest -q'
+permissions:
+  contents: read
+jobs:
+  isolated:
+    runs-on: [self-hosted, Linux, X64, blackglass, isolated]
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Isolated test suite
+        run: ${{ inputs.test-command }}
