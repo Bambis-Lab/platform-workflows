@@ -1,0 +1,12 @@
+name: reusable-repo-policy
+on:
+  workflow_call:
+permissions:
+  contents: read
+jobs:
+  policy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Policy placeholder
+        run: echo 'REPO_POLICY=PASS'
