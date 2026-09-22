@@ -1,0 +1,31 @@
+name: reusable-release-gate
+on:
+  workflow_call:
+    inputs:
+      artifact-name:
+        type: string
+        required: true
+      artifact-path:
+        type: string
+        required: true
+      runner:
+        type: string
+        default: '["ubuntu-latest"]'
+permissions:
+  contents: read
+jobs:
+  package:
+    runs-on: ${{ fromJSON(inputs.runner) }}
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Verify release payload
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -e "${{ inputs.artifact-path }}"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: ${{ inputs.artifact-name }}
+          path: ${{ inputs.artifact-path }}
+          retention-days: 14
