@@ -1,12 +1,21 @@
 name: reusable-security
 on:
   workflow_call:
+    inputs:
+      runner:
+        type: string
+        required: false
+        default: '["ubuntu-latest"]'
 permissions:
   contents: read
 jobs:
-  security:
-    runs-on: ubuntu-latest
+  secrets:
+    runs-on: ${{ fromJSON(inputs.runner) }}
     timeout-minutes: 10
     steps:
-      - name: Security foundation placeholder
-        run: echo 'SECURITY_FOUNDATION=PASS'
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@ff98106e4c7b2bc287b24eaf42907196329070c7
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

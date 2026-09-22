@@ -1,12 +1,24 @@
 name: reusable-repo-policy
 on:
   workflow_call:
+    inputs:
+      runner:
+        type: string
+        required: false
+        default: '["ubuntu-latest"]'
 permissions:
   contents: read
 jobs:
   policy:
-    runs-on: ubuntu-latest
+    runs-on: ${{ fromJSON(inputs.runner) }}
     timeout-minutes: 5
     steps:
-      - name: Policy placeholder
-        run: echo 'REPO_POLICY=PASS'
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Validate repository policy
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f README.md
+          test -f .gitignore || echo 'NOTICE: .gitignore not present'
+          if [ -d manifests ]; then find manifests -type f -maxdepth 1 -print; fi
+          echo 'REPO_POLICY=PASS'
