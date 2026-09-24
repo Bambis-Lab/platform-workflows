@@ -1,0 +1,20 @@
+name: shadow-workflow-policy-canary
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  policy:
+    name: report-only-workflow-policy
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Report action pinning drift
+        run: python3 scripts/shadow_validate_action_pinning.py
+      - name: Declare report-only mode
+        if: always()
+        run: |
+          echo 'SHADOW_MODE=REPORT_ONLY'
+          echo 'BLOCKING=false'
