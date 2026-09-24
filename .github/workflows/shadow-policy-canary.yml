@@ -1,6 +1,9 @@
 name: shadow-workflow-policy-canary
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - shadow/consistency-canary-20260924
 permissions:
   contents: read
 jobs:
