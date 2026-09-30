@@ -1,4 +1,5 @@
 name: reusable-apple-xcode-ci
+
 on:
   workflow_call:
     inputs:
@@ -8,14 +9,35 @@ on:
       xcode-command:
         type: string
         required: true
+      artifact-name:
+        type: string
+        required: false
+        default: ''
+      artifact-path:
+        type: string
+        required: false
+        default: ''
+
 permissions:
   contents: read
+
 jobs:
   xcode:
     runs-on: ${{ inputs.runs-on }}
     timeout-minutes: 45
+
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+
       - name: Xcode build and test
         shell: bash
         run: ${{ inputs.xcode-command }}
+
+      - name: Upload build artifact
+        if: ${{ inputs.artifact-path != '' }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: ${{ inputs.artifact-name }}
+          path: ${{ inputs.artifact-path }}
+          if-no-files-found: error
+          retention-days: 7
